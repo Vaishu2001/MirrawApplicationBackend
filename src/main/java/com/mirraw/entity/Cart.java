@@ -26,8 +26,10 @@ public class Cart {
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int  id;
-	private String name;
-	private String price;
+	private String email;
+	private String itemName;
+	private int itemPrice;
+	private String itemUrl;
 	
 //	@OneToOne(cascade=CascadeType.ALL)
 //	@JoinColumn(name = "customerid" )

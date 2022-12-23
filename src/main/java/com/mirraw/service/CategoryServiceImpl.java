@@ -17,7 +17,6 @@ import com.mirraw.entity.Customer;
 import com.mirraw.entity.Item;
 import com.mirraw.exception.NoContentException;
 
-
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
@@ -44,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
 		} else {
 			return categories;
 		}
-	
+
 	}
 
 //	@Override
@@ -80,12 +79,12 @@ public class CategoryServiceImpl implements CategoryService {
 		return items;
 	}
 
-//	@Override
-//	public String saveToCart(Cart cart) {
-//		// TODO Auto-generated method stub
-//		cartDao.save(cart);
-//		return "Cart saved successfully";
-//	}
+	@Override
+	public String saveToCart(Cart cart) {
+		// TODO Auto-generated method stub
+		cartDao.save(cart);
+		return "Cart saved successfully";
+	}
 
 //	@Override
 //	public Cart findByname(String name) {
@@ -94,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
 //	}
 
 	@Override
-	public String deleteTheater(int id) {
+	public String deleteCart(int id) {
 		// TODO Auto-generated method stub
 		cartDao.deleteById(id);
 		return "Deleted Successfully";
@@ -115,6 +114,30 @@ public class CategoryServiceImpl implements CategoryService {
 	public List<Item> findByName(String itemName) {
 		// TODO Auto-generated method stub
 		return itemDao.findByName(itemName);
+	}
+
+	@Override
+	public List<Cart> getAllCart(String email) throws NoContentException {
+		// TODO Auto-generated method stub
+		List<Cart> cart = cartDao.findByEmail(email);
+		if (cart.isEmpty()) {
+			throw new NoContentException("All Carts are currently unavailable");
+		} else {
+			return cart;
+		}
+
+	}
+
+	@Override
+	public Cart findByEmailAndItemName(String email, String itemName) {
+		// TODO Auto-generated method stub
+		return cartDao.findByEmailAndItemName(email, itemName);
+	}
+
+	@Override
+	public List<Cart> findByCartItemName(String itemName) {
+		// TODO Auto-generated method stub
+		return cartDao.findByItemName(itemName);
 	}
 
 }

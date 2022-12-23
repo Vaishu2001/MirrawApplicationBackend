@@ -20,15 +20,21 @@ public interface CategoryService {
 
 	public List<Item> SortByItemDiscount(String input);
 
-	//public String saveToCart(Cart cart);
+	public String saveToCart(Cart cart);
 
 	//public Cart findByname(String name);
 
-	public String deleteTheater(int id);
+	public String deleteCart(int id);
 
 	//public List<Cart> getAllCart() throws NoContentException;
 
 	public List<Item> findByName(String itemName);
+
+	public List<Cart> getAllCart(String email) throws NoContentException;
+
+	public Cart findByEmailAndItemName(String email, String itemName);
+
+	public List<Cart> findByCartItemName(String itemName);
 
 	
 

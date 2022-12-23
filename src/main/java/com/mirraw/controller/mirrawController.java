@@ -21,9 +21,9 @@ import com.mirraw.entity.Category;
 import com.mirraw.entity.Customer;
 import com.mirraw.entity.Item;
 import com.mirraw.exception.NoContentException;
+import com.mirraw.exception.UserAlreadyExists;
 import com.mirraw.service.CategoryService;
 import com.mirraw.service.CustomerService;
-
 
 @RestController
 @RequestMapping("/mirraw")
@@ -43,41 +43,50 @@ public class mirrawController {
 	public ResponseEntity<List<Category>> GetCategoryByName(@PathVariable("input") String input) {
 //    fetching the list of categories using the category field
 		ResponseEntity<List<Category>> responseEntity;
-try {
-		responseEntity = new ResponseEntity<List<Category>>(categoryService.getByCategoryName(input), HttpStatus.OK);
-}
-catch(NoContentException e) {
-	responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
-}
-catch (Exception e) {
-	responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.METHOD_FAILURE);
+		try {
+			responseEntity = new ResponseEntity<List<Category>>(categoryService.getByCategoryName(input),
+					HttpStatus.OK);
+		} catch (NoContentException e) {
+			responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.METHOD_FAILURE);
 //	theaterLogger.info(e.getMessage());
-}
+		}
 
 		return responseEntity;
 	}
-//	@GetMapping("allCart")
-//	public ResponseEntity<List<Cart>> GetAllCart() {
-////    fetching the list of categories using the category field
-//		ResponseEntity<List<Cart>> responseEntity;
-//try {
-//		responseEntity = new ResponseEntity<List<Cart>>(categoryService.getAllCart(), HttpStatus.OK);
-//}
-//catch(NoContentException e) {
-//	responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
-//}
-//catch (Exception e) {
-//	responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.METHOD_FAILURE);
-////	theaterLogger.info(e.getMessage());
-//}
-//
-//		return responseEntity;
-//	}
+
+	@GetMapping("allCart/{email}")
+	public ResponseEntity<List<Cart>> GetAllCart(@PathVariable("email") String email) {
+//    fetching the list of categories using the category field
+		ResponseEntity<List<Cart>> responseEntity;
+
+		try {
+			responseEntity = new ResponseEntity<List<Cart>>(categoryService.getAllCart(email), HttpStatus.OK);
+		} catch (NoContentException e) {
+			responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.METHOD_FAILURE);
+//	theaterLogger.info(e.getMessage());
+		}
+
+		return responseEntity;
+	}
 
 	@PostMapping("/signUp")
-	public String savedetails(@RequestBody Customer customer) {
+	public ResponseEntity<String> savedetails(@RequestBody Customer customer) {
+		ResponseEntity<String> responseEntity;
+		try {
+			responseEntity = new ResponseEntity<String>(customerService.saveSignUpdetails(customer), HttpStatus.OK);
 
-		return customerService.saveSignUpdetails(customer);
+		} catch (UserAlreadyExists e) {
+			responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			// theaterLogger.info(e.getCode()+" : "+e.getMessage());
+		} catch (Exception e) {
+			responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.METHOD_FAILURE);
+			// theaterLogger.error(e.getMessage());
+		}
+		return responseEntity;
 	}
 
 	@GetMapping("findByUserNameAndPassword/{email}/{password}")
@@ -96,12 +105,12 @@ catch (Exception e) {
 
 	}
 
-//	@PostMapping("/category")
-//	public String saveProduct(@RequestBody Category category) {
-//
-//		return categoryService.saveProduct(category);
-//	}
-//
+	@PostMapping("/category")
+	public String saveProduct(@RequestBody Category category) {
+
+		return categoryService.saveProduct(category);
+	}
+
 //	@PostMapping("/cart")
 //	public String saveToCart(@RequestBody Cart cart) {
 //
@@ -148,24 +157,25 @@ catch (Exception e) {
 		return responseEntity;
 	}
 
-//	@DeleteMapping("{name}")
-//	public ResponseEntity<String> DELETE(@PathVariable("name") String name) {
-//		/*
-//		 * Pseudo Code 1. Create Response Entity Object 2. Try deleting cart details
-//		 * through Service Implementation 3. if Successful send proper response
-//		 */
-//		ResponseEntity<String> responseEntity = null;
-//		Cart cartdetails = categoryService.findByname(name);
-//		int id = -1;
-//		if (cartdetails != null) {
-//			id = cartdetails.getId();
-//		}
-//		if (id != -1) {
-//			String message = categoryService.deleteTheater(id);
-//			responseEntity = new ResponseEntity<String>(message, HttpStatus.OK);
-//		}
-//		return responseEntity;
-//	}
+	@DeleteMapping("{email}/{name}")
+	public ResponseEntity<String> DELETE(@PathVariable("email") String email, @PathVariable("name") String itemName) {
+		/*
+		 * Pseudo Code 1. Create Response Entity Object 2. Try deleting cart details
+		 * through Service Implementation 3. if Successful send proper response
+		 */
+		ResponseEntity<String> responseEntity = null;
+		Cart cartdetails = categoryService.findByEmailAndItemName(email, itemName);
+		int id = -1;
+		if (cartdetails != null) {
+			id = cartdetails.getId();
+		}
+		if (id != -1) {
+			String message = categoryService.deleteCart(id);
+			responseEntity = new ResponseEntity<String>(message, HttpStatus.OK);
+		}
+		return responseEntity;
+	}
+
 	@GetMapping("itemId/{name}")
 	public ResponseEntity<List<Item>> GetItemById(@PathVariable("name") String itemName) {
 
@@ -173,10 +183,26 @@ catch (Exception e) {
 		ResponseEntity<List<Item>> responseEntity;
 
 		item = categoryService.findByName(itemName);
-		Item i=item.get(0);
+		Item i = item.get(0);
 		System.out.println(i.getId());
 		responseEntity = new ResponseEntity<List<Item>>(item, HttpStatus.OK);
 
 		return responseEntity;
+	}
+
+	@PostMapping("/cart")
+	public String saveToCart(@RequestBody Cart cart) {
+		String itemName = cart.getItemName();
+		List<Item> item = categoryService.findByName(itemName);
+		//check item exists in cart
+		List<Cart> cartItem=categoryService.findByCartItemName(itemName);
+		System.out.println(cartItem);
+		System.out.println(cartItem.isEmpty());
+		if(cartItem.isEmpty()) {
+			return categoryService.saveToCart(cart);
+		}
+		else {
+			return "Item already exists in the cart";
+		}
 	}
 }

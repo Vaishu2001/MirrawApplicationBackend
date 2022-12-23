@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.mirraw.dao.CustomerDao;
 import com.mirraw.entity.Customer;
+import com.mirraw.exception.UserAlreadyExists;
+
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -13,11 +15,22 @@ public class CustomerServiceImpl implements CustomerService {
 	CustomerDao customerDao;
 
 	@Override
-	public String saveSignUpdetails(Customer customer) {
+	public String saveSignUpdetails(Customer customer) throws UserAlreadyExists {
 		// TODO Auto-generated method stub
+		Customer customerdetails=findByName(customer.getEmail());
 		
-		customerDao.save(customer);
-		return "sign up saved successfully";
+		if (customerdetails != null) {
+			throw new UserAlreadyExists("User Already Exists");
+		} else {
+			customerDao.save(customer);
+			return "sign up saved successfully";
+		}
+		
+	}
+
+	private Customer findByName(String email) {
+		// TODO Auto-generated method stub
+		return customerDao.findByEmail(email);
 	}
 
 	@Override
