@@ -24,17 +24,35 @@ public interface CategoryService {
 
 	//public Cart findByname(String name);
 
-	public String deleteCart(int id);
+	//public String deleteCart(int id);
 
 	//public List<Cart> getAllCart() throws NoContentException;
 
 	public List<Item> findByName(String itemName);
 
-	public List<Cart> getAllCart(String email) throws NoContentException;
+	public Item findByItemName(String itemName);
 
-	public Cart findByEmailAndItemName(String email, String itemName);
 
-	public List<Cart> findByCartItemName(String itemName);
+
+	public List<Item> getAllCart(String email) throws NoContentException;
+
+	public String updateCart(String email, String itemName, int quantity);
+
+	public Cart findByCustomerEmailAndItemName(Customer customer, Item item);
+
+	public String deleteByCustomerEmailAndItemName(String email, String itemName);
+
+	public List<Cart> findAllByEmail(Customer c);
+
+	public String updateProduct(Category category);
+
+	//public String deleteById(int id);
+
+
+
+	//public Cart findByCustomerEmailAndItemName(String email, String itemName);
+
+//	public List<Cart> findByCartItemName(String itemName);
 
 	
 

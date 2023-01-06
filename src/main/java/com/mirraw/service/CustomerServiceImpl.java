@@ -39,4 +39,10 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerDao.findByEmailAndPassword(email, password);
 	}
 
+	@Override
+	public Customer findByEmail(String email) {
+		// TODO Auto-generated method stub
+		return customerDao.findByEmail(email);
+	}
+
 }

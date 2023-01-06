@@ -7,12 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.mirraw.entity.Customer;
 
-
 @Repository
-public interface CustomerDao  extends JpaRepository<Customer, Integer> {
-@Query("From Customer c where c.email=:email and c.password=:password")
-	public Customer findByEmailAndPassword(@Param("email")String email, @Param("password")String password);
+public interface CustomerDao extends JpaRepository<Customer, Integer> {
+	@Query("From Customer c where c.email=:email and c.password=:password")
+	public Customer findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
-public Customer findByEmail(String email);
+	public Customer findByEmail(String email);
 
 }

@@ -25,6 +25,8 @@ public interface CategoryDao extends JpaRepository<Category, Integer>{
 	public List<Item> SortByItemPriceDesc(String input);
 	@Query(value="SELECT c.item From Category c where c.categoryName=:input ")
 	public List<Item> SortByDiscount(String input);
+//	@Query(value="DELETE c,i From Category c inner join c.item i on i.category_id=:id  where c.id=:id  ")
+//	public void deleteByCategoryId(int id);
 	
 
 

@@ -9,4 +9,6 @@ public interface CustomerService {
 
 	public Customer findByUserNameAndPassword(String email, String password);
 
+	public Customer findByEmail(String email);
+
 }

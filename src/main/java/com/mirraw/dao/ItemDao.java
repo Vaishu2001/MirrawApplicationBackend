@@ -13,6 +13,7 @@ import com.mirraw.entity.Item;
 public interface ItemDao extends JpaRepository<Customer, Integer>{
 	@Query("From Item i where i.itemName =:itemName")
 	public List<Item> findByName(String itemName);
-	
+	@Query("From Item i where i.itemName =:itemName")
+	public Item findByItemName(String itemName);
 
 }
