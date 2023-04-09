@@ -41,11 +41,12 @@ public class mirrawController {
 	Category category;
 	@Autowired
 	CategoryService categoryService;
+	
 
 //Getting all the categories by giving the category name as input
 	@GetMapping("category/{input}")
 	public ResponseEntity<List<Category>> GetCategoryByName(@PathVariable("input") String input) {
-//    fetching the list of categories using the category field
+//Fetching the list of categories using the category field
 		ResponseEntity<List<Category>> responseEntity;
 		try {
 			responseEntity = new ResponseEntity<List<Category>>(categoryService.getByCategoryName(input),
